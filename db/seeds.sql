@@ -31,4 +31,24 @@ VALUE ('Payroll Admin', 110000, 3);
 
 
 -- Employee Seeds --
+-- Managers first --
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Elvis', 'Stanley', null, 1);
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Wanda', 'Dregler',null , 2 );
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Shania', 'Burns', null , 3 );
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Marvin', 'Steed', null , 4 );
+
+-- Employees that report to a manager --
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Sting', 'McGee', 1 , 5 );
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Randy', 'Mann', 2 , 6 );
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Jose', 'Carloco', 3 , 7 );
+INSERT into employees (first_name, last_name, manger_id, role_id)
+VALUE ('Harry', 'Backman', 4 , 8 );
+
 
