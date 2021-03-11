@@ -70,7 +70,7 @@ function viewAllEmploy() {
     connection.query("SELECT employees.first_name, employees.last_name, roles.title, roles.salary, CONCAT(employees.first_name, ' ' , employees.last_name) AS Manager FROM employees INNER JOIN roles on role_id = employees.role_id INNER JOIN department on roles.department_id = department_id;"),
         function (err, res) {
             if (err) throw err
-            console.table(res) //display results in table 
+            console.table(res) //display results in table //need to get working
             homeMenu();
         }
 }
