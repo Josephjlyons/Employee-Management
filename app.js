@@ -2,6 +2,24 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 
+// Build a command-line application that at a minimum allows the user to:
+
+// View departments, roles, employees  --- not working
+
+// Add departments, roles, employees  --- adding employee only works once
+
+// Update employee roles --- not working need to grab employee list to update
+
+// Bonus points if you're able to:
+
+// Update employee managers
+
+// View employees by manager
+
+// Delete departments, roles, and employees
+
+// View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -27,11 +45,12 @@ const homeMenu = () => {
 
                 'View all Employees?',
                 'View all Employees by Roles?',
-                'View all Emplyees by Departments?',
+                'View all Employees by Departments?',
                 'Update Employee?',
                 'Add Employee?',
                 'Add Role?',
-                'Add Department?'
+                'Add Department?',
+                'Display Data'
             ]
         }
 
@@ -58,6 +77,9 @@ const homeMenu = () => {
                     break;
                 case 'Add Department?':
                     addDept();
+                    break;
+                    case 'Display Data':       //a way to maybe get out of the prompts and display data with a function along these lines?
+                    console.table();
             };
         });
 };
@@ -79,7 +101,7 @@ function viewAllEmploy() {
 // ------ View By Roles ------//
 
 function viewByRoles() {
-    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN role on employees.role_id = roles.id;"),
+    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN roles on employees.role_id = roles.id;"),
         function (err, res) {
             if (err) throw err
             console.table(res)
@@ -102,8 +124,14 @@ function viewByDept() {
 // ------ Update a Current Employee ------//
 
 function updateEmployee() {
-    connection.query("SELECT")
-    // inquirer
+    connection.query("SELECT employees.last_name, roles.title")
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'empUpdate',
+            message: 'Which employee would you like to update?'
+        },
+    ])
 
 
 }
