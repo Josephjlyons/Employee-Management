@@ -4,7 +4,7 @@ const cTable = require('console.table');
 
 // Build a command-line application that at a minimum allows the user to:
 
-// View departments, roles, employees  --- not working
+// View departments, roles, employees  ---  employees is doubled and tripped should be an easy fix with 
 
 // Add departments, roles, employees  --- adding employee only works once
 
@@ -63,7 +63,7 @@ const homeMenu = () => {
                 case 'View all Employees by Roles?':
                     viewByRoles();
                     break;
-                case 'View all Emplyees by Departments?':
+                case 'View all Employees by Departments?':
                     viewByDept();
                     break;
                 case 'Update Employee?':
@@ -78,7 +78,7 @@ const homeMenu = () => {
                 case 'Add Department?':
                     addDept();
                     break;
-                    case 'Display Data':       //a way to maybe get out of the prompts and display data with a function along these lines?
+                case 'Display Data':       //a way to maybe get out of the prompts and display data with a function along these lines?
                     console.table();
             };
         });
@@ -89,42 +89,44 @@ const homeMenu = () => {
 // ------ View All Employess ------//
 
 function viewAllEmploy() {
-    connection.query("SELECT employees.first_name, employees.last_name, roles.title, roles.salary, CONCAT(employees.first_name, ' ' , employees.last_name) AS Manager FROM employees INNER JOIN roles on role_id = employees.role_id INNER JOIN department on roles.department_id = department_id;"),
+    connection.query("SELECT employees.first_name, employees.last_name, roles.title, roles.salary, CONCAT(employees.first_name, ' ' , employees.last_name) AS Manager FROM employees LEFT JOIN roles on role_id = employees.role_id INNER JOIN department on roles.department_id = department_id;",
         function (err, res) {
             if (err) throw err
-            console.table(res) //display results in table //need to get working
+            console.table(res) 
             homeMenu();
         }
-}
+    )
+};
 
 
 // ------ View By Roles ------//
 
 function viewByRoles() {
-    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN roles on employees.role_id = roles.id;"),
+    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN roles on employees.role_id = roles.id;",
         function (err, res) {
             if (err) throw err
             console.table(res)
             homeMenu();
         }
-
-}
+    )
+};
 
 // ------ View By Department ------//
 
 function viewByDept() {
-    connection.query("SELECT employees.first_name, employees.last_name, department.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employees.id;"),
+    connection.query("SELECT employees.first_name, employees.last_name, department.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employees.id;",
         function (err, res) {
             if (err) throw err
             console.table(res)
             homeMenu();
         }
-}
+    )
+};
 
 // ------ Update a Current Employee ------//
 
 function updateEmployee() {
-    connection.query("SELECT employees.last_name, roles.title")
+    connection.query("SELECT employees.last_name, roles.title;",
     inquirer.prompt([
         {
             type: 'input',
@@ -132,9 +134,9 @@ function updateEmployee() {
             message: 'Which employee would you like to update?'
         },
     ])
+    )
 
-
-}
+};
 
 // ------ Add an Employee ------//
 
@@ -182,7 +184,7 @@ function addEmployee() {
 // ------ Add a Role ------//
 
 function addRole() {
-    connection.query("SELECT roles.title AS Title, roles.salary AS Salary FROM roles",
+    connection.query("SELECT roles.title AS Title, roles.salary AS Salary FROM roles;",
         (err, res) => {
             inquirer.prompt([
                 {
@@ -204,7 +206,7 @@ function addRole() {
                         '2',
                         '3',
                         '4'
-                   
+
                     ]
                 }
             ])
