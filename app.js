@@ -82,7 +82,7 @@ function viewByRoles() {
     connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN role on employees.role_id = roles.id;"),
         function (err, res) {
             if (err) throw err
-            console.tablele(res)
+            console.table(res)
             homeMenu();
         }
 
@@ -94,7 +94,7 @@ function viewByDept() {
     connection.query("SELECT employees.first_name, employees.last_name, department.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employees.id;"),
         function (err, res) {
             if (err) throw err
-            console.tablele(res)
+            console.table(res)
             homeMenu();
         }
 }
@@ -102,7 +102,7 @@ function viewByDept() {
 // ------ Update a Current Employee ------//
 
 function updateEmployee() {
-connection.query("SELECT")
+    connection.query("SELECT")
     // inquirer
 
 
@@ -111,9 +111,45 @@ connection.query("SELECT")
 // ------ Add an Employee ------//
 
 function addEmployee() {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'What is the employees first name?'
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'What is the employees last name?'
+        },
+        {
+            type: 'input',
+            name: 'role_id',
+            message: 'What is the employees role id?',
+        },
+        {
+            type: 'input',
+            name: 'manager_id',
+            message: 'What is their managers id number?'
+        }
+    ])
+        .then((answer) => {
+            connection.query("INSERT INTO employees SET ?",
+                {
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.role_id,
+                    manager_id: answer.manager_id
+                },
+                function (err, res) {
+                    if (err) throw err;
+                    console.table(res);
+                    homeMenu();
+                }
+            )
+        });
 
-    // inquirer
-}
+};
 
 // ------ Add a Role ------//
 
@@ -122,14 +158,26 @@ function addRole() {
         (err, res) => {
             inquirer.prompt([
                 {
-                    name: 'Title',
                     type: 'input',
+                    name: 'Title',
                     message: 'What is the role Title?'
                 },
                 {
-                    name: 'Salary',
                     type: 'input',
+                    name: 'Salary',
                     message: 'What is the salary of the new Role?'
+                },
+                {
+                    type: 'list',
+                    name: 'Dept',
+                    message: 'What is the department id for the new role? Sales(1) Legal(2) Finance(3) Engineering(4)',
+                    choices: [
+                        '1',
+                        '2',
+                        '3',
+                        '4'
+                   
+                    ]
                 }
             ])
                 .then((answer) => {
@@ -137,11 +185,12 @@ function addRole() {
                         {
                             title: answer.Title,
                             salary: answer.Salary,
+                            department_id: answer.Dept
                         },
                         function (err, res) {
                             if (err)
                                 throw err;
-                            console.tablele(res);
+                            console.table(res);
                             homeMenu();
                         }
                     );
@@ -156,8 +205,8 @@ function addRole() {
 function addDept() {
     inquirer.prompt([
         {
-            name: 'deptName',
             type: 'input',
+            name: 'deptName',
             message: 'What Department would you like to add on?'
         }
     ])
@@ -167,9 +216,8 @@ function addDept() {
                     name: answer.deptName
                 },
                 function (err, res) {
-                    if (err)
-                        throw err;
-                    console.tablele(res);
+                    if (err) throw err;
+                    console.table(res);
                     homeMenu();
                 }
             );
