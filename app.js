@@ -49,8 +49,7 @@ const homeMenu = () => {
                 'Update Employee?',
                 'Add Employee?',
                 'Add Role?',
-                'Add Department?',
-                'Display Data'
+                'Add Department?'
             ]
         }
 
@@ -78,8 +77,7 @@ const homeMenu = () => {
                 case 'Add Department?':
                     addDept();
                     break;
-                case 'Display Data':       //a way to maybe get out of the prompts and display data with a function along these lines?
-                    console.table();
+
             };
         });
 };
@@ -88,7 +86,7 @@ const homeMenu = () => {
 
 // ------ View All Employess ------//
 
-function viewAllEmploy() {
+const viewAllEmploy = () => {
     connection.query("SELECT employees.first_name,employees.last_name,roles.title,roles.salary,department.name,CONCAT(manager.first_name,' ',manager.last_name)AS Manager FROM employees LEFT JOIN employees manager ON employees.manager_id=manager.id INNER JOIN roles ON roles.id=employees.role_id INNER JOIN department ON roles.department_id=department.id;",
         function (err, res) {
             if (err) throw err
@@ -101,7 +99,7 @@ function viewAllEmploy() {
 
 // ------ View By Roles ------//
 
-function viewByRoles() {
+const viewByRoles = () => {
     connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN roles on employees.role_id = roles.id;",
         function (err, res) {
             if (err) throw err
@@ -113,7 +111,7 @@ function viewByRoles() {
 
 // ------ View By Department ------//
 
-function viewByDept() {
+const viewByDept = () => {
     connection.query("SELECT employees.first_name, employees.last_name, department.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employees.id;",
         function (err, res) {
             if (err) throw err
@@ -125,36 +123,33 @@ function viewByDept() {
 
 // ------ Update a Current Employee ------//
 
-function query(queryString, data = []) {
-    return new Promise((resolve, reject) => {
-        connection.query(queryString, data, function (err, res) {
-            if (err) reject(err)
-            else resolve(res)
-        })
-    })
-}
-async function updateEmployee() {
-    const roles = await query("SELECT * FROM roles")
-    connection.query("SELECT CONCAT(employees.first_name, ' ', employees.last_name) AS name, employees.id AS value FROM employees;", function (err, res) {
-        if (err) throw err
-        console.log(roles)
+const updateEmployee = () => {
+    connection.query('SELECT employees.last_name AS value FROM employees', (err, results) => {
         inquirer.prompt([
             {
-                choices: res,
-                type: 'list',
-                name: 'empUpdate',
-                message: 'Which employee would you like to update?'
+                type: "list",
+                name: "last_name",
+                message: "Choose employee to update?",
+                choices: results
             },
-        ]).then(console.log)
+            {
+                type: "input",
+                name: "role_id",
+                message: "What is this employees new role_id?"
+            }
+        ]).then((answers) => {
+            connection.query(`UPDATE employees SET role_id = ${answers.role_id} WHERE employees.last_name = '${answers.last_name}'`, function (error, data) {
+                if (error) throw err;
+                console.table(data)
+                homeMenu();
+            });
+        });
     })
-
-
-
-};
+}
 
 // ------ Add an Employee ------//
 
-function addEmployee() {
+const addEmployee = () => {
     inquirer.prompt([
         {
             type: 'input',
@@ -197,7 +192,7 @@ function addEmployee() {
 
 // ------ Add a Role ------//
 
-function addRole() {
+const addRole = () => {
     connection.query("SELECT roles.title AS Title, roles.salary AS Salary FROM roles;",
         (err, res) => {
             inquirer.prompt([
@@ -246,7 +241,7 @@ function addRole() {
 
 // ------ Add Department ------//
 
-function addDept() {
+const addDept = () => {
     inquirer.prompt([
         {
             type: 'input',
@@ -268,3 +263,4 @@ function addDept() {
         });
 
 };
+
