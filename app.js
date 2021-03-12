@@ -4,19 +4,19 @@ const cTable = require('console.table');
 
 // Build a command-line application that at a minimum allows the user to:
 
-// View departments, roles, employees  ---  employees is doubled and tripped should be an easy fix with 
+// View departments, roles, employees  ---  √
 
-// Add departments, roles, employees  --- adding employee only works once
+// Add departments, roles, employees  --- √
 
-// Update employee roles --- not working need to grab employee list to update
+// Update employee roles --- √-ish
 
 // Bonus points if you're able to:
 
-// Update employee managers
+// Update employee managers --- update
 
-// View employees by manager
+// View employees by manager --- refined search call and function added to switch statement 
 
-// Delete departments, roles, and employees
+// Delete departments, roles, and employees  --- probably a drop statement somewhere 
 
 // View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 
@@ -89,10 +89,10 @@ const homeMenu = () => {
 // ------ View All Employess ------//
 
 function viewAllEmploy() {
-    connection.query("SELECT employees.first_name, employees.last_name, roles.title, roles.salary, CONCAT(employees.first_name, ' ' , employees.last_name) AS Manager FROM employees LEFT JOIN roles on role_id = employees.role_id INNER JOIN department on roles.department_id = department_id;",
+    connection.query("SELECT employees.first_name,employees.last_name,roles.title,roles.salary,department.name,CONCAT(manager.first_name,' ',manager.last_name)AS Manager FROM employees LEFT JOIN employees manager ON employees.manager_id=manager.id INNER JOIN roles ON roles.id=employees.role_id INNER JOIN department ON roles.department_id=department.id;",
         function (err, res) {
             if (err) throw err
-            console.table(res) 
+            console.table(res)
             homeMenu();
         }
     )
@@ -125,16 +125,30 @@ function viewByDept() {
 
 // ------ Update a Current Employee ------//
 
-function updateEmployee() {
-    connection.query("SELECT employees.last_name, roles.title;",
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'empUpdate',
-            message: 'Which employee would you like to update?'
-        },
-    ])
-    )
+function query(queryString, data = []) {
+    return new Promise((resolve, reject) => {
+        connection.query(queryString, data, function (err, res) {
+            if (err) reject(err)
+            else resolve(res)
+        })
+    })
+}
+async function updateEmployee() {
+    const roles = await query("SELECT * FROM roles")
+    connection.query("SELECT CONCAT(employees.first_name, ' ', employees.last_name) AS name, employees.id AS value FROM employees;", function (err, res) {
+        if (err) throw err
+        console.log(roles)
+        inquirer.prompt([
+            {
+                choices: res,
+                type: 'list',
+                name: 'empUpdate',
+                message: 'Which employee would you like to update?'
+            },
+        ]).then(console.log)
+    })
+
+
 
 };
 
