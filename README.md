@@ -6,12 +6,14 @@
 
 ## Application Video Walkthrough
 
-[Video Demo](Insert HERE)
+[Video Demo](https://drive.google.com/file/d/14ZUdXU-6HmOTkcdIVXivTv_ifhzB2NWi/view?usp=sharing)
 
 
 ## Table of Contents
 
 * [Purpose](#Purpose)
+
+* [Installation](#Installation)
 
 * [Technologies](#Technologies)
 
@@ -23,6 +25,11 @@
 
 A backend application that lets the user build, store and change their employees,departments and roles all while using the command line. `Console.table` is included to help the user visualize the database by building a easy to read table. 
 
+## Installation
+
+1. Run npm install to install all and any dependencies.
+2. Run npm start in your command line to start the application. 
+3. Navigate through the prompted questions with arrow keys and enter text fields simply with a keyboard. 
 
 
 ## Technologies
