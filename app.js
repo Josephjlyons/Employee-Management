@@ -8,7 +8,7 @@ const cTable = require('console.table');
 
 // Add departments, roles, employees  --- √
 
-// Update employee roles --- √-ish
+// Update employee roles --- √
 
 // Bonus points if you're able to:
 
@@ -44,12 +44,13 @@ const homeMenu = () => {
             choices: [
 
                 'View all Employees?',
-                'View all Employees by Roles?',
-                'View all Employees by Departments?',
+                'View all Roles?',
+                'View all Departments?',
                 'Update Employee?',
                 'Add Employee?',
                 'Add Role?',
-                'Add Department?'
+                'Add Department?',
+                'Exit'
             ]
         }
 
@@ -59,10 +60,10 @@ const homeMenu = () => {
                 case 'View all Employees?':
                     viewAllEmploy();
                     break;
-                case 'View all Employees by Roles?':
+                case 'View all Roles?':
                     viewByRoles();
                     break;
-                case 'View all Employees by Departments?':
+                case 'View all Departments?':
                     viewByDept();
                     break;
                 case 'Update Employee?':
@@ -77,6 +78,8 @@ const homeMenu = () => {
                 case 'Add Department?':
                     addDept();
                     break;
+                case 'Exit':
+                    exit();
 
             };
         });
@@ -100,7 +103,7 @@ const viewAllEmploy = () => {
 // ------ View By Roles ------//
 
 const viewByRoles = () => {
-    connection.query("SELECT employees.first_name, employees.last_name, roles.title AS Title FROM employees JOIN roles on employees.role_id = roles.id;",
+    connection.query("SELECT * FROM ROLES;",
         function (err, res) {
             if (err) throw err
             console.table(res)
@@ -112,7 +115,7 @@ const viewByRoles = () => {
 // ------ View By Department ------//
 
 const viewByDept = () => {
-    connection.query("SELECT employees.first_name, employees.last_name, department.name AS Department FROM employees JOIN roles ON employees.role_id = roles.id JOIN department ON roles.department_id = department.id ORDER BY employees.id;",
+    connection.query("SELECT * FROM DEPARTMENT;",
         function (err, res) {
             if (err) throw err
             console.table(res)
@@ -264,3 +267,7 @@ const addDept = () => {
 
 };
 
+
+const exit = () => {
+    connection.end();
+}
